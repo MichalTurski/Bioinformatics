@@ -51,10 +51,23 @@ def mrna_to_amino_acid(mrna_sequence):
     return amino_acid_sequence
 
 
+def count_GC(sequence):
+    count_table = []
+    while len(sequence) > 100:
+        curr_seq = sequence[0:50]
+        g_count = curr_seq.count("G")
+        c_count = curr_seq.count("C")
+        count_table.append(g_count + c_count)
+        sequence = sequence[50:]
+    return(count_table)
+
 def main():
-    dna_sequence = ''.join(sys.argv[1:]) or input('Please enter the DNA sequence for conversion: ')
+    # dna_sequence = ''.join(sys.argv[1:]) or input('Please enter the DNA sequence for conversion: ')
+    with open(sys.argv[1], 'r') as file:
+        dna_sequence = file.read().replace('\n', '')
     mrna = dna_to_mrna(dna_sequence)
     mrna_sequence = []
+    print(count_GC(dna_sequence))
     while mrna:
         mrna_sequence.append(mrna[:3])
         mrna = mrna[3:]
