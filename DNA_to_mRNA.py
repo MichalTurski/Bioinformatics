@@ -59,7 +59,8 @@ def count_GC(sequence):
         c_count = curr_seq.count("C")
         count_table.append(g_count + c_count)
         sequence = sequence[50:]
-    return(count_table)
+    return count_table
+
 
 def main():
     # dna_sequence = ''.join(sys.argv[1:]) or input('Please enter the DNA sequence for conversion: ')
