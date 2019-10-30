@@ -26,7 +26,18 @@ class TestConfig(unittest.TestCase):
 
 
 class TestReadFastaFile(unittest.TestCase):
-    def
+    def test_empty_fasta(self):
+        file_mock = StringIO('')
+        self.assertRaises(Needelman_Wunch.InputError, Needelman_Wunch.read_fasta_file(file_mock, 100))
+
+    def test_file_too_long(self):
+        file_mock = StringIO('first line \n TEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKAD')
+        self.assertRaises(Needelman_Wunch.InputError, Needelman_Wunch.read_fasta_file(file_mock, 10))
+
+    def test_valid_fasta(self):
+        file_mock = StringIO('first line \n TEITAAMVKELREST GAGMMDCKN\nALSETNGDFDKAVQLLR EKGLGKAAKKAD')
+        seq = Needelman_Wunch.read_fasta_file(file_mock, 100)
+        self.assertEqual(seq, 'TEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKAD')
 
 
 class TestNwTable(unittest.TestCase):
