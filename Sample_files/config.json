@@ -2,6 +2,6 @@
 	"GP":-2,
 	"SAME": 5,
 	"DIFF": -5,
-	"MAX_SEQ_LENGTH": 100,
-	"MAX_PATHS": 10,
+	"MAX_SEQ_LENGTH": 3000,
+	"MAX_PATHS": 10
 }

@@ -61,7 +61,7 @@ class TestNwTable(unittest.TestCase):
         seq1 = 'ABC'
         seq2 = 'ADC'
         table = Needelman_Wunch.NwTable(seq1, seq2, config)
-        paths_generator = table.get_paths()
+        paths_generator = table.path_generator()
         score, paths = next(paths_generator)
         self.assertEqual(score, 1)
         self.assertSequenceEqual(paths, ('A_C', 'A_C'))
@@ -74,7 +74,7 @@ class TestNwTable(unittest.TestCase):
         seq1 = 'ADB'
         seq2 = 'AB'
         table = Needelman_Wunch.NwTable(seq1, seq2, config)
-        paths_generator = table.get_paths()
+        paths_generator = table.path_generator()
         score, paths = next(paths_generator)
         self.assertEqual(score, 2)
         self.assertSequenceEqual(paths, ('ADB', 'A_B'))
@@ -88,7 +88,7 @@ class TestNwTable(unittest.TestCase):
         seq1 = 'AB'
         seq2 = 'AD'
         table = Needelman_Wunch.NwTable(seq1, seq2, config)
-        paths_generator = table.get_paths()
+        paths_generator = table.path_generator()
         score1, out_seqs1 = next(paths_generator)
         score2, out_seqs2 = next(paths_generator)
         self.assertEqual(score1, -2)
@@ -105,7 +105,7 @@ class TestNwTable(unittest.TestCase):
         seq1 = 'AB'
         seq2 = 'AD'
         table = Needelman_Wunch.NwTable(seq1, seq2, config)
-        paths_generator = table.get_paths()
+        paths_generator = table.path_generator()
         score1, out_seqs1 = next(paths_generator)
         self.assertEqual(score1, -2)
         self.assertTrue({out_seqs1}.issubset(expected_seqs))

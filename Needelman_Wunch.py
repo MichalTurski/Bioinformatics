@@ -52,7 +52,7 @@ class NwTable:
         (val_if_left, val_if_corner, val_if_up) = self.__calculate_possibilities__(i, j)
         self.table[i, j] = max(val_if_left, val_if_corner, val_if_up)
 
-    def get_paths(self):
+    def path_generator(self):
         i = len(self.seq1) - 1
         j = len(self.seq2) - 1
         for num, path in enumerate(self.__get_path__(i, j)):
@@ -114,16 +114,26 @@ def read_fasta_file(file, max_len):
 
 
 @click.command()
-@click.option('--seq1_file', '-a', help='First sequence file.', type=click.File('r'))
-@click.option('--seq2_file', '-b', help='Second sequence file.', type=click.File('r'))
-@click.option('--config_file', '-c', help='Config file.', type=click.File('r'))
-@click.option('--output', '-o', help='Output file', type=click.File('w'))
+@click.option('--seq1_file', '-a', help='First sequence file.', type=click.File('r'), required=True)
+@click.option('--seq2_file', '-b', help='Second sequence file.', type=click.File('r'), required=True)
+@click.option('--config_file', '-c', help='Config file.', type=click.File('r'), required=True)
+@click.option('--output', '-o', help='Output file', type=click.File('w'), required=True)
 def main(seq1_file, seq2_file, config_file, output):
-    pass
-    #  TODO: parse config
-    #  TODO: read files into sentences
-    #  TODO: Build NW table
-    #  TODO: Print paths to file
+    try:
+        config = Config(config_file)
+        in_seq1 = read_fasta_file(seq1_file, config.max_seq_length)
+        in_seq2 = read_fasta_file(seq2_file, config.max_seq_length)
+    except InputError as e:
+        print(str(e))
+    else:
+        nw_table = NwTable(in_seq1, in_seq2, config)
+        for score, alignments in nw_table.path_generator():
+            output.write(str(score))
+            output.write('\n')
+            output.write(alignments[0])
+            output.write('\n')
+            output.write(alignments[1])
+            output.write('\n')
 
 
 if __name__ == "__main__":
