@@ -1,6 +1,7 @@
 import unittest
 import Needelman_Wunch
 
+
 class TestNwTable(unittest.TestCase):
 
     def test_upper(self):
@@ -17,11 +18,11 @@ class TestNwTable(unittest.TestCase):
         with self.assertRaises(TypeError):
             s.split(2)
 
-class TestConfig(unittest.TestCase):
+#class TestConfig(unittest.TestCase):
     #TODO
 
 
-class TestReadFastaFile(unittest.TestCase):
+#class TestReadFastaFile(unittest.TestCase):
     #TODO
 
 

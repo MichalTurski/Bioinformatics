@@ -2,17 +2,23 @@ import numpy as np
 import json
 import click
 
+
 # Needelman-Wunch table
 class NwTable:
     def __init__(self, seq1, seq2, config):
-        #  TODO
+        pass
+        # TODO
+
     def get_path(self):
-        ###  generates all paths.
+        #  generates all paths.
+        pass
         # TODO
-        yield(score, path)
+
     def __get_path__(self, x, y):
-        ###  generates paths starting in (x, y) position.
+        #  generates paths starting in (x, y) position.
+        pass
         # TODO
+
 
 class Config:
     def __init__(self, config_file):
@@ -27,7 +33,9 @@ class Config:
 
 
 def read_fasta_file(file):
-    return seq
+    pass
+    #  return seq
+
 
 @click.command()
 @click.option('--seq1_file', '-a', help='First sequence.', type=click.File('r'))
@@ -35,11 +43,11 @@ def read_fasta_file(file):
 @click.option('--config_file', '-c', help='Config file.', type=click.File('r'))
 @click.option('--output', '-o', help='Output file', type=click.File('w'))
 def main(seq1_file, seq2_file, config_file, output):
-    #TODO: parse config
-    #TODO: read files into sentences
-    #TODO: Build NW table
-    #TODO: Print paths to file
-
+    pass
+    #  TODO: parse config
+    #  TODO: read files into sentences
+    #  TODO: Build NW table
+    #  TODO: Print paths to file
 
 
 if __name__ == "__main__":
