@@ -7,6 +7,7 @@ class InputError(ValueError):
     def __init__(self, exception):
         super().__init__('Wrong input:\n' + str(exception))
 
+
 # Needelman-Wunch table
 class NwTable:
     def __init__(self, seq1, seq2, config):

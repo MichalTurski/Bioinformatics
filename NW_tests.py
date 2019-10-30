@@ -6,23 +6,6 @@ from unittest.mock import MagicMock
 import Needelman_Wunch
 
 
-class TestNwTable(unittest.TestCase):
-
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
-
-    def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
-        self.assertFalse('Foo'.isupper())
-
-    def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
-
-
 class TestConfig(unittest.TestCase):
     def test_correct_json(self):
         file_mock = StringIO('{"GP": 1, "SAME": 2, "DIFF": 3, "MAX_SEQ_LENGTH": 4, "MAX_PATHS": 5,}')
@@ -41,8 +24,26 @@ class TestConfig(unittest.TestCase):
         file_mock = StringIO('{"SAME": 2, "DIFF": 3, "MAX_SEQ_LENGTH": 4, "MAX_PATHS": 5,}')
         self.assertRaises(Needelman_Wunch.InputError, Needelman_Wunch.Config(file_mock))
 
-#class TestReadFastaFile(unittest.TestCase):
-    #TODO
+
+class TestReadFastaFile(unittest.TestCase):
+    def
+
+
+class TestNwTable(unittest.TestCase):
+
+    def test_upper(self):
+        self.assertEqual('foo'.upper(), 'FOO')
+
+    def test_isupper(self):
+        self.assertTrue('FOO'.isupper())
+        self.assertFalse('Foo'.isupper())
+
+    def test_split(self):
+        s = 'hello world'
+        self.assertEqual(s.split(), ['hello', 'world'])
+        # check that s.split fails when the separator is not a string
+        with self.assertRaises(TypeError):
+            s.split(2)
 
 
 if __name__ == '__main__':
