@@ -104,6 +104,8 @@ class Config:
 def read_fasta_file(file, max_len):
     lines = file.readlines()[1:]
     text = ''.join(lines)
+    if not text:
+        raise InputError('There is no fasta sequence.')
     text = "".join(text.split())
     if len(text) > max_len:
         raise InputError('Fasta sequence too long.')
