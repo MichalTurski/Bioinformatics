@@ -12,19 +12,75 @@ class InputError(ValueError):
 class NwTable:
     def __init__(self, seq1, seq2, config):
         #  Use first input sequence as a rows names
+        self.seq1 = '_' + seq1
+        self.seq2 = '_' + seq2
+        self.config = config
+        self.table = np.zeros((len(self.seq1), len(self.seq2)))
+        for i in range(len(self.seq1)):
+            for j in range(len(self.seq2)):
+                if i == 0:
+                    self.table[i, j] = j * config.gap_penalty
+                elif j == 0:
+                    self.table[i, j] = i * config.gap_penalty
+                else:
+                    self.__update_field__(i, j)
+
         #  First output sequence is alignment for first input
-        pass
-        # TODO
 
-    def get_path(self):
-        #  generates all paths.
-        pass
-        # TODO
+    def __calculate_possibilities__(self, i, j):
+        if i > 0:
+            val_if_up = self.table[i - 1, j] + self.config.gap_penalty
+        else:
+            val_if_up = np.nan
 
-    def __get_path__(self, x, y):
+        if j > 0:
+            val_if_left = self.table[i, j - 1] + self.config.gap_penalty
+        else:
+            val_if_left = np.nan
+
+        if i == 0 and j == 0:
+            val_if_corner = np.nan
+        else:
+            if self.seq1[i] == self.seq2[j]:
+                val_if_corner = self.table[i - 1, j - 1] + self.config.same_reward
+            else:
+                val_if_corner = self.table[i - 1, j - 1] + self.config.diff_penalty
+
+        return val_if_left, val_if_corner, val_if_up
+
+    def __update_field__(self, i, j):
+        (val_if_left, val_if_corner, val_if_up) = self.__calculate_possibilities__(i, j)
+        self.table[i, j] = max(val_if_left, val_if_corner, val_if_up)
+
+    def get_paths(self):
+        i = len(self.seq1) - 1
+        j = len(self.seq2) - 1
+        for num, path in enumerate(self.__get_path__(i, j)):
+            if num == self.config.max_paths:
+                break
+            yield int(self.table[i, j]), path
+
+    def __get_path__(self, i, j):
         #  generates paths starting in (x, y) position.
-        pass
-        # TODO
+        if i == j == 0:
+            yield ('', '')
+        else:
+            val_if_left, val_if_corner, val_if_up = self.__calculate_possibilities__(i, j)
+            if val_if_up == self.table[i, j]:
+                for prefixes in self.__get_path__(i - 1, j):
+                    yield (prefixes[0] + self.seq1[i], prefixes[1] + '_')
+
+            if val_if_left == self.table[i, j]:
+                for prefixes in self.__get_path__(i, j - 1):
+                    yield (prefixes[0] + '_', prefixes[1] + self.seq2[j])
+
+            if val_if_corner == self.table[i, j]:
+                if self.seq1[i] == self.seq2[j]:
+                    char_to_prepend = self.seq2[j]
+                else:
+                    char_to_prepend = '_'
+                for prefixes in self.__get_path__(i - 1, j - 1):
+                    yield (prefixes[0] + char_to_prepend, prefixes[1] + char_to_prepend)
 
 
 class Config:
