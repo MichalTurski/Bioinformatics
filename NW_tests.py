@@ -33,6 +33,11 @@ class TestReadFastaFile(unittest.TestCase):
         with self.assertRaises(Needelman_Wunch.InputError):
             Needelman_Wunch.read_fasta_file(file_mock, 100)
 
+    def test_almost_empty_fasta(self):
+        file_mock = StringIO('first line \n')
+        with self.assertRaises(Needelman_Wunch.InputError):
+            Needelman_Wunch.read_fasta_file(file_mock, 100)
+
     def test_file_too_long(self):
         file_mock = StringIO('first line \n TEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKAD')
         with self.assertRaises(Needelman_Wunch.InputError):

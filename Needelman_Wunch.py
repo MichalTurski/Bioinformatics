@@ -46,8 +46,13 @@ class Config:
 
 
 def read_fasta_file(file, max_len):
-    pass
-    #  return seq
+    lines = file.readlines()[1:]
+    text = ''.join(lines)
+    text = "".join(text.split())
+    if len(text) > max_len:
+        raise InputError('Fasta sequence too long.')
+    text = text.upper()
+    return text
 
 
 @click.command()
