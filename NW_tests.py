@@ -8,7 +8,7 @@ import Needelman_Wunch
 
 class TestConfig(unittest.TestCase):
     def test_correct_json(self):
-        file_mock = StringIO('{"GP": 1, "SAME": 2, "DIFF": 3, "MAX_SEQ_LENGTH": 4, "MAX_PATHS": 5,}')
+        file_mock = StringIO('{"GP": 1, "SAME": 2, "DIFF": 3, "MAX_SEQ_LENGTH": 4, "MAX_PATHS": 5}')
         config = Needelman_Wunch.Config(file_mock)
         self.assertEqual(config.gap_penalty, 1)
         self.assertEqual(config.same_reward, 2)
@@ -18,21 +18,25 @@ class TestConfig(unittest.TestCase):
 
     def test_not_json(self):
         file_mock = StringIO('jnaiolfubsiao')
-        self.assertRaises(Needelman_Wunch.InputError, Needelman_Wunch.Config(file_mock))
+        with self.assertRaises(Needelman_Wunch.InputError):
+            Needelman_Wunch.Config(file_mock)
 
     def test_lack_value(self):
-        file_mock = StringIO('{"SAME": 2, "DIFF": 3, "MAX_SEQ_LENGTH": 4, "MAX_PATHS": 5,}')
-        self.assertRaises(Needelman_Wunch.InputError, Needelman_Wunch.Config(file_mock))
+        file_mock = StringIO('{"SAME": 2, "DIFF": 3, "MAX_SEQ_LENGTH": 4, "MAX_PATHS": 5}')
+        with self.assertRaises(Needelman_Wunch.InputError):
+            Needelman_Wunch.Config(file_mock)
 
 
 class TestReadFastaFile(unittest.TestCase):
     def test_empty_fasta(self):
         file_mock = StringIO('')
-        self.assertRaises(Needelman_Wunch.InputError, Needelman_Wunch.read_fasta_file(file_mock, 100))
+        with self.assertRaises(Needelman_Wunch.InputError):
+            Needelman_Wunch.read_fasta_file(file_mock, 100)
 
     def test_file_too_long(self):
         file_mock = StringIO('first line \n TEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKAD')
-        self.assertRaises(Needelman_Wunch.InputError, Needelman_Wunch.read_fasta_file(file_mock, 10))
+        with self.assertRaises(Needelman_Wunch.InputError):
+            Needelman_Wunch.read_fasta_file(file_mock, 10)
 
     def test_valid_fasta(self):
         file_mock = StringIO('first line \n TEITAAMVKELREST GAGMMDCKN\nALSETNGDFDKAVQLLR EKGLGKAAKKAD')
@@ -47,7 +51,7 @@ class TestReadFastaFile(unittest.TestCase):
 
 class TestNwTable(unittest.TestCase):
     def test_same_length_seq(self):
-        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -3, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5,}')
+        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -3, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5}')
         config = Needelman_Wunch.Config(config_file_mock)
         seq1 = 'ABC'
         seq2 = 'ADC'
@@ -55,10 +59,11 @@ class TestNwTable(unittest.TestCase):
         score, paths = table.get_path()
         self.assertEqual(score, 1)
         self.assertSequenceEqual(paths, ('A_C', 'A_C'))
-        self.assertRaises(StopIteration, table.get_path())
+        with self.assertRaises(StopIteration):
+            table.get_path()
 
     def test_diff_length_seq(self):
-        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -3, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5,}')
+        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -3, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5}')
         config = Needelman_Wunch.Config(config_file_mock)
         seq1 = 'ADB'
         seq2 = 'AB'
@@ -66,10 +71,11 @@ class TestNwTable(unittest.TestCase):
         score, paths = table.get_path()
         self.assertEqual(score, 2)
         self.assertSequenceEqual(paths, ('A_B', 'AB'))
-        self.assertRaises(StopIteration, table.get_path())
+        with self.assertRaises(StopIteration):
+            table.get_path()
 
     def test_multiple_output(self):
-        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -5, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5,}')
+        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -5, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5}')
         expected_seqs = {('AB_', 'A_D'), ('A_B', 'AD_')}
         config = Needelman_Wunch.Config(config_file_mock)
         seq1 = 'AB'
@@ -81,10 +87,11 @@ class TestNwTable(unittest.TestCase):
         self.assertEqual(score2, -2)
         self.assertTrue({out_seqs1}.issubset(expected_seqs))
         self.assertTrue({out_seqs2}.issubset(expected_seqs))
-        self.assertRaises(StopIteration, table.get_path())
+        with self.assertRaises(StopIteration):
+            table.get_path()
 
     def test_output_limit(self):
-        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -5, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 1,}')
+        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -5, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 1}')
         expected_seqs = {('AB_', 'A_D'), ('A_B', 'AD_')}
         config = Needelman_Wunch.Config(config_file_mock)
         seq1 = 'AB'
@@ -93,7 +100,8 @@ class TestNwTable(unittest.TestCase):
         score1, out_seqs1 = table.get_path()
         self.assertEqual(score1, -2)
         self.assertTrue({out_seqs1}.issubset(expected_seqs))
-        self.assertRaises(StopIteration, table.get_path())
+        with self.assertRaises(StopIteration):
+            table.get_path()
 
 
 if __name__ == '__main__':

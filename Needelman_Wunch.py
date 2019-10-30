@@ -31,12 +31,18 @@ class Config:
     def __init__(self, config_file):
         #  TODO: handle errors, throw exceptions and so on.
         config_json = config_file.read()
-        config_dict = json.dumps(config_json)
-        self.gap_penalty = config_dict.GP
-        self.same_reward = 0  # TODO
-        self.diff_penalty = 0  # TODO
-        self.max_seq_length = 10  # TODO
-        self.max_paths = 3  # TODO
+        try:
+            config_dict = json.loads(config_json)
+        except json.JSONDecodeError as e:
+            raise InputError('Unable to parse configuration.')
+        try:
+            self.gap_penalty = config_dict['GP']
+            self.same_reward = config_dict['SAME']
+            self.diff_penalty = config_dict['DIFF']
+            self.max_seq_length = config_dict['MAX_SEQ_LENGTH']
+            self.max_paths = config_dict['MAX_PATHS']
+        except KeyError as e:
+            raise InputError('Parameter ' + str(e) + ' not specified.')
 
 
 def read_fasta_file(file, max_len):
