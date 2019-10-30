@@ -39,22 +39,61 @@ class TestReadFastaFile(unittest.TestCase):
         seq = Needelman_Wunch.read_fasta_file(file_mock, 100)
         self.assertEqual(seq, 'TEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKAD')
 
+    def test_small_case(self):
+        file_mock = StringIO('first line \n teitAAMVKELreST')
+        seq = Needelman_Wunch.read_fasta_file(file_mock, 100)
+        self.assertEqual(seq, 'TEITAAMVKELREST')
+
 
 class TestNwTable(unittest.TestCase):
+    def test_same_length_seq(self):
+        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -3, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5,}')
+        config = Needelman_Wunch.Config(config_file_mock)
+        seq1 = 'ABC'
+        seq2 = 'ADC'
+        table = Needelman_Wunch.NwTable(seq1, seq2, config)
+        score, paths = table.get_path()
+        self.assertEqual(score, 1)
+        self.assertSequenceEqual(paths, ('A_C', 'A_C'))
+        self.assertRaises(StopIteration, table.get_path())
 
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
+    def test_diff_length_seq(self):
+        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -3, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5,}')
+        config = Needelman_Wunch.Config(config_file_mock)
+        seq1 = 'ADB'
+        seq2 = 'AB'
+        table = Needelman_Wunch.NwTable(seq1, seq2, config)
+        score, paths = table.get_path()
+        self.assertEqual(score, 2)
+        self.assertSequenceEqual(paths, ('A_B', 'AB'))
+        self.assertRaises(StopIteration, table.get_path())
 
-    def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
-        self.assertFalse('Foo'.isupper())
+    def test_multiple_output(self):
+        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -5, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 5,}')
+        expected_seqs = {('AB_', 'A_D'), ('A_B', 'AD_')}
+        config = Needelman_Wunch.Config(config_file_mock)
+        seq1 = 'AB'
+        seq2 = 'AD'
+        table = Needelman_Wunch.NwTable(seq1, seq2, config)
+        score1, out_seqs1 = table.get_path()
+        score2, out_seqs2 = table.get_path()
+        self.assertEqual(score1, -2)
+        self.assertEqual(score2, -2)
+        self.assertTrue({out_seqs1}.issubset(expected_seqs))
+        self.assertTrue({out_seqs2}.issubset(expected_seqs))
+        self.assertRaises(StopIteration, table.get_path())
 
-    def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
+    def test_output_limit(self):
+        config_file_mock = StringIO('{"GP": -2, "SAME": 2, "DIFF": -5, "MAX_SEQ_LENGTH": 10, "MAX_PATHS": 1,}')
+        expected_seqs = {('AB_', 'A_D'), ('A_B', 'AD_')}
+        config = Needelman_Wunch.Config(config_file_mock)
+        seq1 = 'AB'
+        seq2 = 'AD'
+        table = Needelman_Wunch.NwTable(seq1, seq2, config)
+        score1, out_seqs1 = table.get_path()
+        self.assertEqual(score1, -2)
+        self.assertTrue({out_seqs1}.issubset(expected_seqs))
+        self.assertRaises(StopIteration, table.get_path())
 
 
 if __name__ == '__main__':

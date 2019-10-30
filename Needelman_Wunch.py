@@ -11,6 +11,8 @@ class InputError(ValueError):
 # Needelman-Wunch table
 class NwTable:
     def __init__(self, seq1, seq2, config):
+        #  Use first input sequence as a rows names
+        #  First output sequence is alignment for first input
         pass
         # TODO
 
@@ -43,8 +45,8 @@ def read_fasta_file(file, max_len):
 
 
 @click.command()
-@click.option('--seq1_file', '-a', help='First sequence.', type=click.File('r'))
-@click.option('--seq2_file', '-b', help='Second sequence.', type=click.File('r'))
+@click.option('--seq1_file', '-a', help='First sequence file.', type=click.File('r'))
+@click.option('--seq2_file', '-b', help='Second sequence file.', type=click.File('r'))
 @click.option('--config_file', '-c', help='Config file.', type=click.File('r'))
 @click.option('--output', '-o', help='Output file', type=click.File('w'))
 def main(seq1_file, seq2_file, config_file, output):
