@@ -1,6 +1,7 @@
 import numpy as np
 import json
 import click
+import sys
 
 
 class InputError(ValueError):
@@ -99,6 +100,7 @@ class Config:
             self.max_paths = config_dict['MAX_PATHS']
         except KeyError as e:
             raise InputError('Parameter ' + str(e) + ' not specified.')
+        sys.setrecursionlimit(2 * self.max_seq_length)
 
 
 def read_fasta_file(file, max_len):
