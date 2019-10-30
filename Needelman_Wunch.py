@@ -3,6 +3,10 @@ import json
 import click
 
 
+class InputError(ValueError):
+    def __init__(self, exception):
+        super().__init__('Wrong input:\n' + str(exception))
+
 # Needelman-Wunch table
 class NwTable:
     def __init__(self, seq1, seq2, config):
@@ -32,7 +36,7 @@ class Config:
         self.max_paths = 3  # TODO
 
 
-def read_fasta_file(file):
+def read_fasta_file(file, max_len):
     pass
     #  return seq
 
