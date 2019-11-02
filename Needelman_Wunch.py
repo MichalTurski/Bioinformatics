@@ -2,6 +2,7 @@ import numpy as np
 import json
 import click
 import sys
+import time
 
 
 class InputError(ValueError):
@@ -128,7 +129,10 @@ def main(seq1_file, seq2_file, config_file, output):
     except InputError as e:
         print(str(e))
     else:
+        start_time = time.time()
         nw_table = NwTable(in_seq1, in_seq2, config)
+        print("Table creation: %s seconds" % (time.time() - start_time))
+        start_time = time.time()
         for score, alignments in nw_table.path_generator():
             output.write(str(score))
             output.write('\n')
@@ -136,6 +140,7 @@ def main(seq1_file, seq2_file, config_file, output):
             output.write('\n')
             output.write(alignments[1])
             output.write('\n')
+        print("Paths generation and printing: %s seconds" % (time.time() - start_time))
 
 
 if __name__ == "__main__":
