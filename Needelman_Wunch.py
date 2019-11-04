@@ -88,7 +88,6 @@ class NwTable:
 
 class Config:
     def __init__(self, config_file):
-        #  TODO: handle errors, throw exceptions and so on.
         config_json = config_file.read()
         try:
             config_dict = json.loads(config_json)
