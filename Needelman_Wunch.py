@@ -101,7 +101,7 @@ class Config:
             self.max_paths = config_dict['MAX_PATHS']
         except KeyError as e:
             raise InputError('Parameter ' + str(e) + ' not specified.')
-        sys.setrecursionlimit(2 * self.max_seq_length)
+        sys.setrecursionlimit(max(2 * self.max_seq_length, sys.getrecursionlimit()))
 
 
 def read_fasta_file(file, max_len):
