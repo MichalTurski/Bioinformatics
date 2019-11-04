@@ -78,11 +78,12 @@ class NwTable:
 
             if val_if_corner == self.table[i, j]:
                 if self.seq1[i] == self.seq2[j]:
-                    char_to_prepend = self.seq2[j]
+                    char_to_prepend1 = char_to_prepend2 = self.seq2[j]
                 else:
-                    char_to_prepend = '_'
+                    char_to_prepend1 = self.seq1[i]
+                    char_to_prepend2 = self.seq2[j]
                 for prefixes in self.__get_path__(i - 1, j - 1):
-                    yield (prefixes[0] + char_to_prepend, prefixes[1] + char_to_prepend)
+                    yield (prefixes[0] + char_to_prepend1, prefixes[1] + char_to_prepend2)
 
 
 class Config:

@@ -64,7 +64,7 @@ class TestNwTable(unittest.TestCase):
         paths_generator = table.path_generator()
         score, paths = next(paths_generator)
         self.assertEqual(score, 1)
-        self.assertSequenceEqual(paths, ('A_C', 'A_C'))
+        self.assertSequenceEqual(paths, ('ABC', 'ADC'))
         with self.assertRaises(StopIteration):
             next(paths_generator)
 
@@ -111,6 +111,21 @@ class TestNwTable(unittest.TestCase):
         self.assertTrue({out_seqs1}.issubset(expected_seqs))
         with self.assertRaises(StopIteration):
             next(paths_generator)
+
+    def test_long_sequences(self):
+        # get all output paths
+        # sample comes from internet
+        config_file_mock = StringIO('{"GP": -2, "SAME": 1, "DIFF": -1, "MAX_SEQ_LENGTH": 15, "MAX_PATHS": 1000}')
+        expected_seq = {('GAA__CGA_ACGTAACC', 'CAAGACGACACG_AAC_')}
+        config = Needelman_Wunch.Config(config_file_mock)
+        seq1 = 'GAACGAACGTAACC'
+        seq2 = 'CAAGACGACACGAAC'
+        pats_set = set()
+        table = Needelman_Wunch.NwTable(seq1, seq2, config)
+        for score, paths in table.path_generator():
+            self.assertEqual(score, 0)
+            pats_set.add(paths)
+        self.assertTrue(expected_seq.issubset(pats_set))
 
 
 if __name__ == '__main__':
